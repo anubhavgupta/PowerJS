@@ -2,11 +2,41 @@
 <html>
 <head>
     <title>Test PowerJS</title>
+    <script type="text/javascript" src="lib/Class.js"></script>
     <script type="text/javascript" src="lib/nameSpaceCreator.js"></script>
-    <script type="text/javascript" src="lib/jsModule.js"></script>
+    <script type="text/javascript" src="lib/JSModule.js"></script>
     <script type="text/javascript" src="lib/PowerJS.js"></script>
 </head>
 <body>
 
 </body>
+<script type="text/javascript">
+
+    //sample module
+    var model = module("SIMS.Access");
+
+    //sample Class
+     model.$Class("Calculator")
+             .$define(function (initNumber) {
+                 this.add = function(anotherNumber){
+                     alert(initNumber+anotherNumber);
+                 }
+             });
+
+    //object creation
+    var calObj = new  model.Calculator(10);
+
+    //usage
+    calObj.add(20);
+
+
+    console.log("****************debug data*********************");
+
+    console.log("****************class Oject*********************");
+    console.log(calObj);
+    console.log("****************Generated Model*********************");
+    console.log(model);
+    console.log("****************debug data*********************");
+    console.log(getModel());
+</script>
 </html>
