@@ -12,8 +12,8 @@
 </body>
 <script type="text/javascript">
 
-    //sample module
-    var model = module("SIMS.Access");
+    //creates a sample module
+    var model = module("gupta.anubhav");
 
     //sample Class
     model.$Class("ADDCalculator")
@@ -26,7 +26,7 @@
     model.$Class("Calculator")
             .$extends(model.ADDCalculator)
             .$define(function (initNumber) {
-                model.ADDCalculator.call(this,100);
+
                 this.subtract = function(anotherNumber){
                     alert(initNumber - anotherNumber);
                 }
@@ -37,6 +37,7 @@
 
     //usage
     calObj.add(20);
+    calObj.subtract(20);
 
 
 
