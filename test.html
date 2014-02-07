@@ -16,18 +16,28 @@
     var model = module("SIMS.Access");
 
     //sample Class
-     model.$Class("Calculator")
-             .$define(function (initNumber) {
-                 this.add = function(anotherNumber){
-                     alert(initNumber+anotherNumber);
-                 }
-             });
+    model.$Class("ADDCalculator")
+            .$define(function (initNumber) {
+                this.add = function(anotherNumber){
+                    alert(initNumber+anotherNumber);
+                }
+            });
+
+    model.$Class("Calculator")
+            .$extends(model.ADDCalculator)
+            .$define(function (initNumber) {
+                model.ADDCalculator.call(this,100);
+                this.subtract = function(anotherNumber){
+                    alert(initNumber - anotherNumber);
+                }
+            });
 
     //object creation
     var calObj = new  model.Calculator(10);
 
     //usage
     calObj.add(20);
+
 
 
     console.log("****************debug data*********************");
