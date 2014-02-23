@@ -27,7 +27,7 @@
                 },
 
                 performAction:function(){
-                    this.$super("performAction");
+                    //this.$super.performAction();
                     alert("doing Electronic Things");
                 }
 
@@ -39,9 +39,9 @@
                 this.dName = deviceName;
             })
             .$prototype({
-                performAction:function(){
-                    this.$super("performAction");
-                    alert("doing Calculator Things");
+                performAction:function(x){
+                    this.$super.performAction();
+                    alert("doing Calculator Things"+x);
                 }
             });
 
@@ -51,15 +51,16 @@
                 this.dName = deviceName;
             })
             .$prototype({
-                performAction:function(){
-                    this.$super("performAction");
-                    alert("doing Modern Calculator Things");
+                performAction:function(x){
+                    //debugger;
+                    this.$super.performAction(x);
+                    alert("doing Modern Calculator Things"+x);
                 }
             });
 
     var calObj = new model.ModernCalculator("Modern Calculator");
     calObj.deviceName();
-    calObj.performAction();
+    calObj.performAction("10");
 
 
 
