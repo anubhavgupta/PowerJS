@@ -13,66 +13,96 @@
 <script type="text/javascript">
 
     //creates a sample module
-    //private data issue - not under same scope
 
-    var model = module("gupta.anubhav");
+    var MS = module("ManagementSystem");
+    var EMS = module("EmployeeManagementSystem",MS);
 
-    model.$Class("ElectronicDevice")
-            .$constructor(function(dName){
-                this.dName = dName;
+    MS.$Class("ManagementDetails")
+            .$constructor(function(typeOfManagement){
+                this.typeOf = typeOfManagement;
             })
             .$prototype({
-                deviceName:function(){
-                    alert(this.dName);
+                typeOfManagement:function(){
+                    return this.typeOf;
+                }
+            });
+
+
+    EMS.$Class("EMSDetails")
+            .$extends(MS.ManagementDetails)
+            .$constructor(function(type){
+                this.type = type;
+            })
+            .$prototype({
+                typeOfManagement:function(){
+                    alert(this.type+" has a parent of type "+this.$super());
+                }
+            })
+    ;
+
+    EMS.$Class("Employee")
+            .$constructor(function(){
+                this.empName;
+                this.age;
+                this.bloodGrp;
+            })
+            .$prototype({
+                createEmployee:function(name,age,bloodGrp){
+                    this.empName = name;
+                    this.age = age;
+                    this.bloodGrp = bloodGrp;
                 },
-
-                performAction:function(){
-                    //this.$super.performAction();
-                    alert("doing Electronic Things");
+                isAEmployee:function(){
+                    return this instanceof EMS.Manager;
+                },
+                showDetails:function(){
+                    alert(this.empName+","+this.age+","+this.bloodGrp);
                 }
-
             });
 
-    model.$Class("Calculator")
-            .$extends(model. ElectronicDevice)
-            .$constructor(function(deviceName){
-                this.dName = deviceName;
+    EMS.$Class("Manager")
+            .$extends(EMS.Employee)
+            .$constructor(function(){
+                this.typeOfWork;
             })
             .$prototype({
-                performAction:function(x){
-                    this.$super.performAction();
-                    alert("doing Calculator Things"+x);
+                addManager:function(name,age,bloodGrp,typeOfWork){
+                    this.createEmployee(name,age,bloodGrp);
+                    this.typeOfWork = typeOfWork;
+                },
+                showDetails:function(){
+                    this.$super();
+                    alert(this.typeOfWork);
                 }
             });
-
-    model.$Class("ModernCalculator")
-            .$extends(model.Calculator)
-            .$constructor(function(deviceName){
-                this.dName = deviceName;
+    EMS.$Class("SuperManager")
+            .$extends(EMS.Manager)
+            .$constructor(function(){
+                this.salary;
             })
             .$prototype({
-                performAction:function(x){
-                    //debugger;
-                    this.$super.performAction(x);
-                    alert("doing Modern Calculator Things"+x);
+                addSuperManager:function(name,age,bloodGrp,typeOfWork,salary){
+                    this.addManager(name,age,bloodGrp,typeOfWork)
+                    this.salary = salary;
+                },
+                showDetails:function(){
+                    this.$super();
+                    alert(this.salary);
                 }
             });
 
-    var calObj = new model.ModernCalculator("Modern Calculator");
-    calObj.deviceName();
-    calObj.performAction("10");
 
+    var x = new EMS.SuperManager();
+    x.addSuperManager("Anubhav",24,"B+","manageral kind of work",100);
+    x.showDetails();
+    alert(x.isAEmployee());
 
 
 
     console.log("****************debug data*********************");
-
+    console.log(MS);
+    console.log(EMS);
     console.log("****************class Oject*********************");
-    console.log(calObj);
-    console.log("****************Generated Model*********************");
-    console.log(model);
-    console.log("****************debug data*********************");
-    console.log(getModel());
 
 
 </script>
