@@ -13,31 +13,54 @@
 <script type="text/javascript">
 
     //creates a sample module
+    //private data issue - not under same scope
+
     var model = module("gupta.anubhav");
 
-    //sample Class
-    model.$Class("ADDCalculator")
-            .$define(function (initNumber) {
-                this.add = function(anotherNumber){
-                    alert(initNumber+anotherNumber);
+    model.$Class("ElectronicDevice")
+            .$constructor(function(dName){
+                this.dName = dName;
+            })
+            .$prototype({
+                deviceName:function(){
+                    alert(this.dName);
+                },
+
+                performAction:function(){
+                    this.$super("performAction");
+                    alert("doing Electronic Things");
                 }
+
             });
 
     model.$Class("Calculator")
-            .$extends(model.ADDCalculator)
-            .$define(function (initNumber) {
-
-                this.subtract = function(anotherNumber){
-                    alert(initNumber - anotherNumber);
+            .$extends(model. ElectronicDevice)
+            .$constructor(function(deviceName){
+                this.dName = deviceName;
+            })
+            .$prototype({
+                performAction:function(){
+                    this.$super("performAction");
+                    alert("doing Calculator Things");
                 }
             });
 
-    //object creation
-    var calObj = new  model.Calculator(10);
+    model.$Class("ModernCalculator")
+            .$extends(model.Calculator)
+            .$constructor(function(deviceName){
+                this.dName = deviceName;
+            })
+            .$prototype({
+                performAction:function(){
+                    this.$super("performAction");
+                    alert("doing Modern Calculator Things");
+                }
+            });
 
-    //usage
-    calObj.add(20);
-    calObj.subtract(20);
+    var calObj = new model.ModernCalculator("Modern Calculator");
+    calObj.deviceName();
+    calObj.performAction();
+
 
 
 
@@ -49,5 +72,7 @@
     console.log(model);
     console.log("****************debug data*********************");
     console.log(getModel());
+
+
 </script>
 </html>
