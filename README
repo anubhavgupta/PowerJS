@@ -2,7 +2,7 @@ Nice and Easy to use Class Features in JavaScript
 
 code Eg:
 
-=====Basic Class Defination====
+=====Basic Class Defination=====
 
 var model = module("org.example.model");
 
@@ -11,7 +11,7 @@ model.$Class("ExampleClass")
           this.name = name;
        })
        .$prototype({
-         showWorld;function(){
+         showWorld:function(){
            alert("Hello "+this.name+"!!");
          }
        });
@@ -21,4 +21,6 @@ var exampleObj = new model.ExampleClass("Anubhav");
 
 exampleObj.showWorld();// alerts "Hello Anubhav!!"
 
+
+=====Inheritance=====
 
