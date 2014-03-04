@@ -22,5 +22,36 @@ var exampleObj = new model.ExampleClass("Anubhav");
 exampleObj.showWorld();// alerts "Hello Anubhav!!"
 
 
-=====Inheritance=====
+=====Singleton=====
 
+
+var myModule = module("moduleName");
+
+myModule.$Class("TestClass")
+    .$constructor(function(){
+    
+        var myInstance = null;
+        
+        return {
+            getInstance:function(){
+                if(!myInstance){
+                    myInstance = (new myModule.TestClass()).context;
+                }
+                return myInstance;
+            },
+            context:this
+        }
+        
+    })
+    .$prototype({
+    
+        sayHello:function(){
+            alert("hello");
+        }
+        
+    });
+
+
+
+var testInstance = myModule.TestClass().getInstance();
+testInstance.sayHello();
