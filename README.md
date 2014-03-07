@@ -1,4 +1,4 @@
-PowerJS
+# PowerJS
 =========
 
 PowerJs ia a tiny library that makes coding fun, easy to write, modular and easy to read.
