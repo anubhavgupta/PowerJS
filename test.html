@@ -2,7 +2,12 @@
 <html>
 <head>
     <title>Test PowerJS</title>
-    <script type="text/javascript" src="bin/PowerJS.js"></script>
+    <script src="lib/moduleClasses/Class.js"></script>
+    <script src="lib/moduleClasses/Injectable.js"></script>
+    <script src="lib/JSModule.js"></script>
+    <script src="lib/nameSpaceCreator.js"></script>
+    <script src="lib/PowerJS.js"></script>
+<!--    <script type="text/javascript" src="bin/PowerJS.js"></script>-->
 </head>
 <body>
 
@@ -89,16 +94,40 @@
             });
 
 
+
     var x = new EMS.SuperManager();
     x.addSuperManager("Anubhav",24,"B+","manageral kind of work",100);
     x.showDetails();
     alert(x.isAEmployee());
+
+    //test for Injectable
+
+    var View = module("App.View");
+    var model = {
+        data:["Woo Hoo Injectable working!!","Anubhav","Gupta","Anubhav200"]
+    };
+    View.$Injectable("Model",false,model);
+    View.$Class("SampleView")
+            .$provides(["Model"])
+            .$constructor(function(model){
+                this.modelRef = model;
+            })
+            .$prototype({
+                showAll:function(){
+                    alert(this.modelRef.data);
+                }
+            });
+
+
+    var mySampleView = new View.SampleView();
+    mySampleView.showAll();
 
 
 
     console.log("****************debug data*********************");
     console.log(MS);
     console.log(EMS);
+    console.log(View);
     console.log("****************class Oject*********************");
 
 
