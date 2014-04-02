@@ -22,6 +22,7 @@
      * @param module    - JSModule
      */
     function $Class(className, module) {
+
         this._className = className;
         this._module = module;
         this._constructor = function(){
@@ -29,7 +30,30 @@
         };
 
         //defaults
-        this._extendsTo = null;
+        this._extendsTo         = null;
+        this._provides          = null;
+
+        //helper methods
+        this._resolveInjectableItems =function(){
+            var injectableStrArr = this._provides;
+            var injectableParams = [];
+
+            for(var i=0;i<injectableStrArr.length;i++){
+                var injectableItem = this._module._$pjs_._$injectables[injectableStrArr[i]];
+
+                if(injectableItem instanceof $Injectable){
+                    if(injectableItem._isClass){
+                        injectableItem._injectable = new injectableItem._injectable();
+                        injectableItem._isClass = false;
+                    }
+                    injectableParams.push(injectableItem._injectable);
+                }
+                else{
+                    injectableParams.push(null);
+                }
+            }
+            return injectableParams;
+        }
     }
 
     $Class.prototype = {
@@ -48,11 +72,14 @@
             if(this._extendsTo){ //derived class
 
                 _parentClass = function(){
-                    //no Constructor class;
+                    //empty Constructor class;
                     //helps in newing without any fuzz...
                 };
                 _class = function(){
                     this.$super = function(){}; //empty function
+                    if(self._provides){
+                        arguments = self._resolveInjectableItems();
+                    }
                     self._extendsTo.apply(this,arguments);  //call parent's constructor //apply with this prevent polluting base method's prototype
                     self._constructor.apply(this,arguments); //call own constructor
                 };
@@ -75,14 +102,26 @@
                         }(); //auto execute to give it a new scope
 
                     }
+                    else{  /// variable or object
+                        _class.prototype[meth] = pObj[meth];  // copy variables too..
+                    }
 
                 }
 
             }
             else{  //base class
-                _class = this._constructor;
-                _class.prototype  = pObj;
-                _class.prototype.$super = function(){}; //empty super function for base class.
+                _class = function(){
+                    this.$super = function(){}; //empty super function for base class.
+                    if(self._provides){
+                        arguments = self._resolveInjectableItems();
+                    }
+                    self._constructor.apply(this,arguments); //call own constructor
+                };
+
+                for(var prop in pObj){
+                    _class.prototype[prop]  = pObj[prop]; //copy vars and methods
+                }
+
             }
 
             this._module[this._className] = _class;
@@ -91,6 +130,11 @@
 
         $extends: function(classDefinition){
             this._extendsTo = classDefinition;
+            return this;
+        },
+
+        $provides:function(injectableStrArr){
+            this._provides = injectableStrArr;
             return this;
         }
 
@@ -103,18 +147,31 @@
      */
     function JSModule(){
         this._$pjs_ = {
-            $classData:{},
-            $injectables:{}
+            _$classData:{},
+            _$injectables:{}
         }
     };
 
     JSModule.prototype = {
         $Class:function(className){
-            this._$pjs_.$classData[className] = new $Class(className,this);
+            this._$pjs_._$classData[className] = new $Class(className,this);
             this[className] = function(){};
-            return this._$pjs_.$classData[className];
+            return this._$pjs_._$classData[className];
+        },
+        $Injectable:function(name,isClass,injectable){
+            this._$pjs_._$injectables[name] = new $Injectable(name,isClass,injectable);
         }
     };
+
+    /**
+     * Injectable Class
+     */
+    function $Injectable(name,isClass,injectable){
+        this._injectable = injectable;
+        this._isClass = isClass;
+        this._name = name;
+    }
+
 
     /**
      * Creates a object store inside the passed object
