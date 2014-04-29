@@ -37,6 +37,9 @@ function $Class(className, module) {
 
             if(injectableItem instanceof $Injectable){
                 if(injectableItem._isClass){
+                    if(!injectableItem._injectable){
+                        throw  new Error("Unable to Inject: "+injectableItem._name+" in "+this._className);
+                    }
                     injectableItem._injectable = new injectableItem._injectable();
                     injectableItem._isClass = false;
                 }
@@ -146,7 +149,7 @@ function JSModule(){
         _$classData:{},
         _$injectables:{}
     }
-};
+}
 
 JSModule.prototype = {
     $Class:function(className){
@@ -174,7 +177,8 @@ function createNamespace(scope,index,strArray){
         store ={
             modules:{}
         },
-        currentScope;
+        undefined = void 0;
+
 
 
     /*
@@ -209,18 +213,10 @@ function createNamespace(scope,index,strArray){
      *
      * @returns {{modules: {}}}
      */
-    window.getModel = function(){
+    getModel = function(){
         return store;
     };
 
-    /**
-     * returns Last created module.
-     *
-     * @returns {JSModule}
-     */
-    window.getScope = function(){
-        return currentScope;
-    };
 
     /**
      * Creates a new module
@@ -230,15 +226,22 @@ function createNamespace(scope,index,strArray){
      * @param scope -{optional} {JSModule}      - module in which sub modules have to be created.
      * @returns {*}
      */
-    window.module = function(namespaceStr,scope){
-        var str = namespaceStr.split(".");
-        if(scope && scope instanceof JSModule){
-            currentScope = createNamespace(scope,0,str);
+    module = function(namespaceStr,scope){
+        var retModule;
+        if(namespaceStr == undefined && scope ==undefined){      // for anonymous Classes
+            retModule = new JSModule();
         }
         else{
-            currentScope = createNamespace(store.modules,0,str);
+            var str = namespaceStr.split(".");
+            if(scope && scope instanceof JSModule){
+                retModule = createNamespace(scope,0,str);
+            }
+            else{
+                retModule = createNamespace(store.modules,0,str);
+            }
         }
-        return currentScope;
+
+        return retModule;
     };
 
 

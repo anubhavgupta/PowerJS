@@ -35,6 +35,9 @@ function $Class(className, module) {
 
             if(injectableItem instanceof $Injectable){
                 if(injectableItem._isClass){
+                    if(!injectableItem._injectable){
+                        throw  new Error("Unable to Inject: "+injectableItem._name+" in "+this._className);
+                    }
                     injectableItem._injectable = new injectableItem._injectable();
                     injectableItem._isClass = false;
                 }
