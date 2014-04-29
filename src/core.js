@@ -1,11 +1,10 @@
-(function(){
 
     var
         store ={
             modules:{}
         },
-        currentScope,
-        self = this;
+        currentScope;
+
 
     /*
 
@@ -39,7 +38,7 @@
      *
      * @returns {{modules: {}}}
      */
-    this.getModel = function(){
+    window.getModel = function(){
         return store;
     };
 
@@ -48,7 +47,7 @@
      *
      * @returns {JSModule}
      */
-    this.getScope = function(){
+    window.getScope = function(){
         return currentScope;
     };
 
@@ -60,7 +59,7 @@
      * @param scope -{optional} {JSModule}      - module in which sub modules have to be created.
      * @returns {*}
      */
-    this.module = function(namespaceStr,scope){
+    window.module = function(namespaceStr,scope){
         var str = namespaceStr.split(".");
         if(scope && scope instanceof JSModule){
             currentScope = createNamespace(scope,0,str);
@@ -71,7 +70,6 @@
         return currentScope;
     };
 
-})();
 
 /*
  // ======================================================SOME IDEAS==============================================================================

@@ -7,7 +7,7 @@ function JSModule(){
         _$classData:{},
         _$injectables:{}
     }
-};
+}
 
 JSModule.prototype = {
     $Class:function(className){

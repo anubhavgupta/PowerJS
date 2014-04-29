@@ -1,0 +1,35 @@
+{
+  "name": "PowerJS",
+  "version": "0.1.1",
+  "description": "Nice and easy to use Class level features in JavaScript.",
+  "main": "test.html",
+  "bin": {
+    "PowerJS": "PowerJS.js"
+  },
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1"
+  },
+  "repository": {
+    "type": "git",
+    "url": "https://github.com/anubhavgupta/PowerJS.git"
+  },
+  "keywords": [
+    "Class",
+    "dependencyInjection",
+    "Injection",
+    "Dependency",
+    "Injection",
+    "JavaScript",
+    "Class"
+  ],
+  "author": "Anubhav Gupta",
+  "license": "MIT",
+  "bugs": {
+    "url": "https://github.com/anubhavgupta/PowerJS/issues"
+  },
+  "homepage": "https://github.com/anubhavgupta/PowerJS",
+  "devDependencies": {
+    "grunt": "^0.4.4",
+    "grunt-contrib-concat": "^0.4.0"
+  }
+}
