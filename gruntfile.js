@@ -17,8 +17,8 @@ module.exports = function(grunt){
                        "//  Author:  <%= pkg.author%> \n"+
                        "//  License: <%= pkg.license%>  \n"+
                         "//==========================================================\n\n\n\n"+
-                       ";(function(window){\n\n",
-                footer:"})(window)\n"
+                       ";(function(window){\n'use strict';\n\n",
+                footer:"})(window)\n;"
             },
             dist:{
                 src:[

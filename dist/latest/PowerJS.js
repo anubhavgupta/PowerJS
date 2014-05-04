@@ -1,6 +1,6 @@
 //==========================================================
 //  PowerJS                                            
-//  Version: 0.1.1                                
+//  Version: 0.2.1                                
 //  Author:  Anubhav Gupta 
 //  License: MIT  
 //==========================================================
@@ -8,6 +8,7 @@
 
 
 ;(function(window){
+'use strict';
 
 /**
  * PowerJS Class
@@ -27,30 +28,6 @@ function $Class(className, module) {
     this._extendsTo         = null;
     this._provides          = null;
 
-    //helper methods
-    this._resolveInjectableItems =function(){
-        var injectableStrArr = this._provides;
-        var injectableParams = [];
-
-        for(var i=0;i<injectableStrArr.length;i++){
-            var injectableItem = this._module._$pjs_._$injectables[injectableStrArr[i]];
-
-            if(injectableItem instanceof $Injectable){
-                if(injectableItem._isClass){
-                    if(!injectableItem._injectable){
-                        throw  new Error("Unable to Inject: "+injectableItem._name+" in "+this._className);
-                    }
-                    injectableItem._injectable = new injectableItem._injectable();
-                    injectableItem._isClass = false;
-                }
-                injectableParams.push(injectableItem._injectable);
-            }
-            else{
-                injectableParams.push(null);
-            }
-        }
-        return injectableParams;
-    }
 }
 
 $Class.prototype = {
@@ -64,7 +41,41 @@ $Class.prototype = {
         var
             _class,
             _parentClass,
-            self = this;
+            self = this,
+
+        //helper methods
+            _getInjectableItem = function(itemName){
+                var module = self._module;
+                var injectableItem = module._$pjs_._$injectables[itemName];
+                while(!(injectableItem instanceof $Injectable) && module._$pjs_._$parentModule){
+                    module  =   module._$pjs_._$parentModule;
+                    injectableItem = module._$pjs_._$injectables[itemName];
+                }
+
+                return injectableItem;
+            },
+            _resolveInjectableItems = function(){
+
+                var injectableStrArr = self._provides;
+                var injectableParams = [];
+
+                for(var i=0;i<injectableStrArr.length;i++){
+                    var injectableItem = _getInjectableItem([injectableStrArr[i]]);
+
+                    if(injectableItem._isClass){
+                        if(injectableItem._injectable == undefined){
+                            console.error("Unable to Inject: "+injectableItem._name+" in "+self._className);
+                            throw  new Error("Unable to Inject: "+injectableItem._name+" in "+self._className);
+                        }
+                        injectableItem._injectable = new injectableItem._injectable();
+                        injectableItem._isClass = false;
+                    }
+
+                    injectableParams.push(injectableItem._injectable);
+
+                }
+                return injectableParams;
+            };
 
         if(this._extendsTo){ //derived class
 
@@ -73,12 +84,13 @@ $Class.prototype = {
                 //helps in newing without any fuzz...
             };
             _class = function(){
+                var args = arguments;
                 this.$super = function(){}; //empty function
                 if(self._provides){
-                    arguments = self._resolveInjectableItems();
+                    args = _resolveInjectableItems();
                 }
-                self._extendsTo.apply(this,arguments);  //call parent's constructor //apply with this prevent polluting base method's prototype
-                self._constructor.apply(this,arguments); //call own constructor
+                self._extendsTo.apply(this,args);  //call parent's constructor //apply with this prevent polluting base method's prototype
+                self._constructor.apply(this,args); //call own constructor
             };
 
             _parentClass.prototype = this._extendsTo.prototype;
@@ -108,16 +120,18 @@ $Class.prototype = {
         }
         else{  //base class
             _class = function(){
+                var args =arguments;
                 this.$super = function(){}; //empty super function for base class.
                 if(self._provides){
-                    arguments = self._resolveInjectableItems();
+                    args = _resolveInjectableItems();
                 }
-                self._constructor.apply(this,arguments); //call own constructor
+                self._constructor.apply(this,args); //call own constructor
             };
 
-            for(var prop in pObj){
-                _class.prototype[prop]  = pObj[prop]; //copy vars and methods
-            }
+            /*for(var prop in pObj){
+             _class.prototype[prop]  = pObj[prop]; //copy vars and methods
+             }*/
+            _class.prototype  = pObj; //copy vars and methods via ref.
 
         }
 
@@ -144,10 +158,11 @@ function $Injectable(name,isClass,injectable){
     this._name = name;
 }
 
-function JSModule(){
+function JSModule(parentScope){
     this._$pjs_ = {
         _$classData:{},
-        _$injectables:{}
+        _$injectables:{},
+        _$parentModule:parentScope
     }
 }
 
@@ -166,7 +181,7 @@ function createNamespace(scope,index,strArray){
         return scope;
     }
     if(!scope[strArray[index]]){
-        scope[strArray[index]] = new JSModule(); //creates a new JSModule Object
+        scope[strArray[index]] = new JSModule(scope); //creates a new JSModule Object
     }
     return createNamespace(scope[strArray[index]],++index,strArray);
 }
@@ -213,7 +228,7 @@ function createNamespace(scope,index,strArray){
      *
      * @returns {{modules: {}}}
      */
-    getModel = function(){
+    window.getModel = function(){
         return store;
     };
 
@@ -226,7 +241,7 @@ function createNamespace(scope,index,strArray){
      * @param scope -{optional} {JSModule}      - module in which sub modules have to be created.
      * @returns {*}
      */
-    module = function(namespaceStr,scope){
+    window.module = function(namespaceStr,scope){
         var retModule;
         if(namespaceStr == undefined && scope ==undefined){      // for anonymous Classes
             retModule = new JSModule();
@@ -320,3 +335,4 @@ model.$Class
 
 */
 })(window)
+;

@@ -39,7 +39,7 @@
      *
      * @returns {{modules: {}}}
      */
-    getModel = function(){
+    window.getModel = function(){
         return store;
     };
 
@@ -52,7 +52,7 @@
      * @param scope -{optional} {JSModule}      - module in which sub modules have to be created.
      * @returns {*}
      */
-    module = function(namespaceStr,scope){
+    window.module = function(namespaceStr,scope){
         var retModule;
         if(namespaceStr == undefined && scope ==undefined){      // for anonymous Classes
             retModule = new JSModule();

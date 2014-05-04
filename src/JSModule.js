@@ -2,10 +2,11 @@
  * PowerJS module Implementation
  */
 
-function JSModule(){
+function JSModule(parentScope){
     this._$pjs_ = {
         _$classData:{},
-        _$injectables:{}
+        _$injectables:{},
+        _$parentModule:parentScope
     }
 }
 
