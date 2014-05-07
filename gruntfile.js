@@ -53,13 +53,20 @@ module.exports = function(grunt){
                 dest:"bin/PowerJS.js",
                 nonull:true
             }
+        },
+        karma:{
+            unit:{
+                configFile: 'karma.config.js'
+            }
         }
 
     });
 
     grunt.loadNpmTasks('grunt-contrib-concat');
+    grunt.loadNpmTasks("grunt-karma");
 
-    grunt.registerTask("default",["concat"]);
+    grunt.registerTask("default",["concat","karma:unit"]);
+    //grunt.registerTask("default",["karma:unit"]);
 
 
 };

@@ -1,6 +1,6 @@
 //==========================================================
 //  PowerJS                                            
-//  Version: 0.2.1                                
+//  Version: 0.2.2                                
 //  Author:  Anubhav Gupta 
 //  License: MIT  
 //==========================================================
@@ -192,7 +192,11 @@ function createNamespace(scope,index,strArray){
         store ={
             modules:{}
         },
-        undefined = void 0;
+        undefined = void 0,
+        ERROR_STRINGS = {
+            TYPE_STRING:"Expected String Type.",
+            INSTANCE_JSMODULE:"Expected instanceof JSModule."
+        };
 
 
 
@@ -242,13 +246,20 @@ function createNamespace(scope,index,strArray){
      * @returns {*}
      */
     window.module = function(namespaceStr,scope){
+
         var retModule;
         if(namespaceStr == undefined && scope ==undefined){      // for anonymous Classes
             retModule = new JSModule();
         }
         else{
+            if(typeof namespaceStr !="string"){
+                throw new Error(ERROR_STRINGS.TYPE_STRING);
+            }
             var str = namespaceStr.split(".");
-            if(scope && scope instanceof JSModule){
+            if(scope != undefined){
+                if(!(scope instanceof JSModule)){
+                    throw new Error(ERROR_STRINGS.INSTANCE_JSMODULE);
+                }
                 retModule = createNamespace(scope,0,str);
             }
             else{

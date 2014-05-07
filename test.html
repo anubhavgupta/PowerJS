@@ -2,11 +2,6 @@
 <html>
 <head>
     <title>Test PowerJS</title>
-    <!--<script src="lib/moduleClasses/Class.js"></script>
-    <script src="lib/moduleClasses/Injectable.js"></script>
-    <script src="lib/JSModule.js"></script>
-    <script src="lib/nameSpaceCreator.js"></script>
-    <script src="lib/PowerJS.js"></script>-->
     <script src="dist/latest/PowerJS.js"></script>
 </head>
 <body>
@@ -122,7 +117,62 @@
     var mySampleView = new View.SampleView();
     mySampleView.showAll();
 
+    //testing injectables
+    var injPar = module("parent");
+    injPar.$Injectable("InjectableItem",false,"success on parent");
+    var inj = module("parent.child");
+    inj.$Injectable("InjectableItem",false,"success on child");
 
+    var inj1 = module("parent.newChild1");
+
+
+    inj.$Class("TestingInjectable")
+            .$provides(["InjectableItem"])
+            .$constructor(function(item){
+                alert(item);
+            })
+            .$prototype({});
+
+    inj1.$Class("NewTestingInjectable")
+            .$provides(["InjectableItem"])
+            .$constructor(function(item){
+                alert(item);
+            })
+            .$prototype({});
+
+
+    new inj.TestingInjectable();
+
+    new inj1.NewTestingInjectable();
+
+
+    //null in prototype test
+
+    var test = module("NullInPrototype");
+
+    test.$Class("BaseNullInPrototype")
+            .$prototype({
+                alertStuff:function(stuff){
+                    alert(stuff);
+                }
+            });
+
+    test.$Class("NullInPrototype")
+            .$extends(test.BaseNullInPrototype)
+            .$prototype();
+
+    test.$Class("NullInPrototype2")
+            .$extends(test.NullInPrototype)
+            .$constructor(function(){
+                this.alertStuff("hello");
+            })
+            .$prototype();
+
+    new test.NullInPrototype2();
+    /**
+     * ToDo:-
+     *  1)resolve issue with conflicting function name in scope and module name in scope
+     */
 
     console.log("****************debug data*********************");
     console.log(MS);
