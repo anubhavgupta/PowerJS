@@ -49,6 +49,11 @@ describe("PowerJS Test Suite", function() {
                 expect(function(){
                     module({});
                 }).toThrow((new Error("Expected String Type.")));
+
+                expect(function(){
+                    debugger;
+                    module(null);
+                }).toThrow((new Error("Expected String Type.")));
             });
 
         });
@@ -60,12 +65,18 @@ describe("PowerJS Test Suite", function() {
                 expect(typeof module("positive.working",testModule)).toBe("object");
                 expect(typeof testModule.positive.working).toBe("object");
                 expect(testModule.positive.working).toBeDefined();
+                expect(testModule.positive.working instanceof JSModule).toBeTruthy();
             });
 
             it("should not accepts an object.",function(){
                 expect(function(){
                     module("negative",{});
                 }).toThrow(new Error("Expected instanceof JSModule."));
+
+                expect(function(){
+                    module("negative",null);
+                }).toThrow(new Error("Expected instanceof JSModule."));
+
             });
 
             it("should not accepts a number",function(){

@@ -66,7 +66,6 @@ module.exports = function(grunt){
     grunt.loadNpmTasks("grunt-karma");
 
     grunt.registerTask("default",["concat","karma:unit"]);
-    //grunt.registerTask("default",["karma:unit"]);
 
 
 };

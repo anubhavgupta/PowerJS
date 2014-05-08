@@ -59,7 +59,7 @@
     window.module = function(namespaceStr,scope){
 
         var retModule;
-        if(namespaceStr == undefined && scope ==undefined){      // for anonymous Classes
+        if(namespaceStr === undefined && scope === undefined){      // for anonymous Classes
             retModule = new JSModule();
         }
         else{
@@ -67,7 +67,7 @@
                 throw new Error(ERROR_STRINGS.TYPE_STRING);
             }
             var str = namespaceStr.split(".");
-            if(scope != undefined){
+            if(scope !== undefined){
                 if(!(scope instanceof JSModule)){
                     throw new Error(ERROR_STRINGS.INSTANCE_JSMODULE);
                 }
