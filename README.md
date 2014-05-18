@@ -34,7 +34,6 @@ One can also create an **anonymous module**, simply my not providing any paramet
 ```js
 //anonymous module.
 var anonymousModule = module();
-
 ```
 
 
@@ -55,7 +54,6 @@ var newSubModule = module("com.example.newSubModule");
 */
 var anonymousModule = module();//anonymous module.
 var newSubModule = module("newSubModule",anonymousModule);
-
 ```
 ----
 
@@ -87,9 +85,7 @@ App.$Class("AwesomeApp")
 
     
 var appObj = new App.AwesomeApp("Batman");  //alerts Hello Batman!!!
-
 appObj.sayHelloWorld();                     //alerts Hello World
-
 ```
 
 `$Class` parameters
@@ -106,7 +102,6 @@ appObj.sayHelloWorld();                     //alerts Hello World
             
         
 ```js
-
 // Constructor is optional.
 
 var App = module("app");
@@ -123,7 +118,6 @@ App.$Class("AwesomeApp")
     
 var appObj = new App.AwesomeApp();  //alerts Hello Batman!!!
 appObj.sayHello("Batman");          //alerts Hello World
-
 ```
 ----            
 
@@ -196,8 +190,6 @@ App.$Class("DerivedClass")
         }
     });
 
-
-
 var derivedClassObj = new App.DerivedClass();
 derivedClassObj.sayHello("Batman");
 //o/p
@@ -214,6 +206,7 @@ Advance Features
 Dependency Injection
 ----
 Anything like an object/ function/ string, etc. can be injected to the constructor of a class. `$Injectable` method can be used to declare dependencies and `$provides` method can be used to inject dependencies.
+
 
 **Defining Dependencies:**
 ```js
@@ -234,8 +227,8 @@ App.$Class("Alerter")
     });
 
 App.$Injectable("Alerter",true,App.Alerter);
-
 ```
+
 `$Injectable` takes 3 parameter
 -  String : Name of Injectable item which will be used later in `$provides` to fetch the correct item.
 -  Boolean : True if the item to be injected is a class and needs to be new-ed once before injecting.
@@ -244,7 +237,6 @@ App.$Injectable("Alerter",true,App.Alerter);
 
   
 **Injecting dependencies:**
-
 ```js
 //injection example
 //usage of $provides
@@ -263,8 +255,6 @@ App.$Class("InjectionExample")
 //Declaring an Injectable String
 App.$Injectable("Message",false,"Hello World!!!");
 var InjectionEgObj = new App.InjectionExample();
-
-
 ```
 
 
@@ -298,9 +288,9 @@ App.$Injectable("Message",false,"Hello World!!!");
 //Declaring an Injectable Class
 App.$Injectable("Alerter",true,App.Alerter);
 var InjectionEgObj = new App.InjectionExample();
-
 ```
-`$provides` takes 1 parameter:
+
+`$provides` method takes one parameter:
 
 - Array - Array of strings, name of items to be injected.
 
@@ -337,7 +327,7 @@ Page1.$Class("Page1Class")
     .$prototype({});
 
 Example.$Class("ExampleClass")
-    .$provides(["MessageObj"])//"MessageObj" not accessable in "Page1" module.
+    .$provides(["MessageObj"])//"MessageObj" not accessable in "Example" module.
     .$constructor(function(messageOb){
         alert(messageOb.message); // Error!!!
     })
