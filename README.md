@@ -103,7 +103,6 @@ appObj.sayHelloWorld();                     //alerts Hello World
         
 ```js
 // Constructor is optional.
-
 var App = module("app");
 
 //this also works
@@ -208,7 +207,7 @@ Dependency Injection
 Anything like an object/ function/ string, etc. can be injected to the constructor of a class. `$Injectable` method can be used to declare dependencies and `$provides` method can be used to inject dependencies.
 
 
-**Defining Dependencies:**
+**Declaring Dependencies:**
 ```js
 var App = module("app");
 
@@ -229,7 +228,7 @@ App.$Class("Alerter")
 App.$Injectable("Alerter",true,App.Alerter);
 ```
 
-`$Injectable` takes 3 parameter
+`$Injectable` takes three parameter
 -  String : Name of Injectable item which will be used later in `$provides` to fetch the correct item.
 -  Boolean : True if the item to be injected is a class and needs to be new-ed once before injecting.
 -  Anything: Item to be injected.
