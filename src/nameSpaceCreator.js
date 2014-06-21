@@ -12,7 +12,7 @@ function createNamespace(scope,index,strArray){
         return scope;
     }
     if(!scope[strArray[index]]){
-        scope[strArray[index]] = new JSModule(scope); //creates a new JSModule Object
+        scope[strArray[index]] = new JSModule(scope,strArray[index]); //creates a new JSModule Object
     }
     return createNamespace(scope[strArray[index]],++index,strArray);
 }

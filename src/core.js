@@ -1,13 +1,18 @@
 
     var
         store ={
-            modules:{}
+            modules:{},
+            plugins:{}
         },
         undefined = void 0,
         ERROR_STRINGS = {
             TYPE_STRING:"Expected String Type.",
             INSTANCE_JSMODULE:"Expected instanceof JSModule."
         };
+
+    var getJSModule = function(){
+        return JSModule;
+    };
 
 
     /**
@@ -53,3 +58,48 @@
 
         return retModule;
     };
+
+    //------------------------------------------ PLUGIN INTERFACE  ----------------------------------------//
+
+    function $Plugin(pluginName,plugins){
+        this._pluginName = pluginName;
+        this._dependencies = null;
+        this._plugins = plugins;
+        this.plugin= null; //stores the returned function/constructor
+    }
+
+    $Plugin.prototype = {
+        $provides:function(pluginNameArr){
+            this._dependencies = pluginNameArr;
+            return this;
+        },
+        $create:function(meth){
+            var resolvedDependencies = [];
+            if(this._dependencies && this._dependencies.length){
+                for(var i=0;i<this._dependencies.length;i++){
+                    resolvedDependencies[i] = this._plugins[this._dependencies[i]].plugin.prototype;
+                }
+            }
+
+            this.plugin = meth.apply(this,resolvedDependencies);
+        }
+    };
+
+    /**
+     * Helps creating a PowerJS plugin.
+     * Expects a plugin name, which can be used later as an injectable item in Plugin's "provide".
+     *
+     * @param pluginName - name of PowerJS plugin
+     * @returns {$Plugin}
+     */
+    module.$Plugin = function(pluginName){
+        store.plugins[pluginName] = new $Plugin(pluginName,store.plugins);
+        return store.plugins[pluginName];
+    };
+
+
+    //default JSModule plugin aliases
+    module.$Plugin("JSModule").$create(getJSModule);
+    module.$Plugin("$Module").$create(getJSModule);
+    module.$Plugin("Module").$create(getJSModule);
+    module.$Plugin("module").$create(getJSModule);

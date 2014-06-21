@@ -13,138 +13,176 @@
  * @param className - Class Name
  * @param module    - JSModule
  */
-function $Class(className, module) {
 
-    this._className = className;
-    this._module = module;
-    this._constructor = function(){
-        //empty constructor
-    };
 
-    //defaults
-    this._extendsTo         = null;
-    this._provides          = null;
+(function(){
 
-}
+    //class generator
+    function $Class(className, module) {
 
-$Class.prototype = {
+        this._className = className;
+        this._module = module;
+        this._constructor = function(){
+            //empty constructor
+        };
 
-    $constructor:function(constMethod){
-        this._constructor = constMethod;
-        return this;
-    },
+        //defaults
+        this._extendsTo         = null;
+    }
 
-    $prototype:function(pObj){
-        var
-            _class,
-            _parentClass,
-            self = this,
+    $Class.prototype = {
+        //static array of methods to be executed inside constructor.
+        _$preProcess:[],
+        _$postProcess:[],
 
-        //helper methods
-            _getInjectableItem = function(itemName){
-                var module = self._module;
-                var injectableItem = module._$pjs_._$injectables[itemName];
-                while(!(injectableItem instanceof $Injectable) && module._$pjs_._$parentModule){
-                    module  =   module._$pjs_._$parentModule;
-                    injectableItem = module._$pjs_._$injectables[itemName];
-                }
+        $constructor:function(constMethod){
+            this._constructor = constMethod;
+            return this;
+        },
 
-                return injectableItem;
-            },
-            _resolveInjectableItems = function(){
+        $prototype:function(pObj){
+            var
+                _class,
+                _parentClass,
+                self = this;
 
-                var injectableStrArr = self._provides;
-                var injectableParams = [];
+            //helper methods
 
-                for(var i=0;i<injectableStrArr.length;i++){
-                    var injectableItem = _getInjectableItem([injectableStrArr[i]]);
+            if(this._extendsTo){ //derived class
 
-                    if(injectableItem._isClass){
-                        if(injectableItem._injectable == undefined){
-                            console.error("Unable to Inject: "+injectableItem._name+" in "+self._className);
-                            throw  new Error("Unable to Inject: "+injectableItem._name+" in "+self._className);
-                        }
-                        injectableItem._injectable = new injectableItem._injectable();
-                        injectableItem._isClass = false;
+                _parentClass = function(){
+                    //empty Constructor class;
+                    //helps in newing without any fuzz...
+                };
+                _class = function(){
+                    var inputs={
+                        args:arguments,
+                        superMethod:function(){},       //empty function
+                        context:this,
+                        generatorContext:self,
+                        module:self._module,
+                        className:self._className
+                    };
+
+                    //pre-process
+                    for(var i=0;i<self._$preProcess.length;i++){
+                        self._$preProcess[i].apply(self,[inputs]);
                     }
 
-                    injectableParams.push(injectableItem._injectable);
+                    this.$super = inputs.superMethod;
+                    self._extendsTo.apply(inputs.context,inputs.args);     //call parent's constructor //apply with this prevent polluting base method's prototype
+                    self._constructor.apply(inputs.context,inputs.args);      //call own constructor
+                };
 
-                }
-                return injectableParams;
-            };
+                _parentClass.prototype = this._extendsTo.prototype;
+                _class.prototype = new _parentClass();
+                _class.prototype.constructor = _class; // for instanceof comparison
 
-        if(this._extendsTo){ //derived class
+                for(var meth in pObj){
+                    if(pObj.hasOwnProperty(meth)){
+                        if(typeof  pObj[meth] === "function" )
+                        {
+                            _class.prototype[meth] = function(){
+                                var methd = meth;
+                                return function(){
+                                    this.$super = self._extendsTo.prototype[methd] || function(){};
+                                    var returnVal = pObj[methd].apply(this,arguments);
+                                    this.$super = function(){};
+                                    return returnVal;
+                                }
+                            }(); //auto execute to give it a new scope
 
-            _parentClass = function(){
-                //empty Constructor class;
-                //helps in newing without any fuzz...
-            };
-            _class = function(){
-                var args = arguments;
-                this.$super = function(){}; //empty function
-                if(self._provides){
-                    args = _resolveInjectableItems();
-                }
-                self._extendsTo.apply(this,args);  //call parent's constructor //apply with this prevent polluting base method's prototype
-                self._constructor.apply(this,args); //call own constructor
-            };
-
-            _parentClass.prototype = this._extendsTo.prototype;
-            _class.prototype = new _parentClass();
-            _class.prototype.constructor = _class; // for instanceof comparison
-
-            for(var meth in pObj){
-                if(typeof  pObj[meth] === "function")
-                {
-                    _class.prototype[meth] = function(){
-                        var methd = meth;
-                        return function(){
-                            this.$super = self._extendsTo.prototype[methd] || function(){};
-                            var returnVal = pObj[methd].apply(this,arguments);
-                            this.$super = function(){};
-                            return returnVal;
                         }
-                    }(); //auto execute to give it a new scope
+                        else{  /// variable or object
+                            _class.prototype[meth] = pObj[meth];  // copy variables too..
+                        }
+                    }
 
-                }
-                else{  /// variable or object
-                    _class.prototype[meth] = pObj[meth];  // copy variables too..
                 }
 
             }
+            else{  //base class
+                _class = function(){
 
-        }
-        else{  //base class
-            _class = function(){
-                var args =arguments;
-                this.$super = function(){}; //empty super function for base class.
-                if(self._provides){
-                    args = _resolveInjectableItems();
-                }
-                self._constructor.apply(this,args); //call own constructor
+                    var inputs={
+                        args:arguments,
+                        superMethod:function(){},       //empty function
+                        context:this,
+                        generatorContext:self,
+                        module:self._module,
+                        className:self._className
+                    };
+
+                    //pre-process
+                    for(var i=0;i<self._$preProcess.length;i++){
+                        self._$preProcess[i].apply(self,[inputs]);
+                    }
+
+                    this.$super = inputs.superMethod;
+                    self._constructor.apply(inputs.context,inputs.args); //call own constructor
+                };
+                _class.prototype  = pObj; //copy vars and methods via ref.
+            }
+
+            //post-process
+            var inputs={
+                generatedClass:_class,
+                generatorContext:self,
+                module:self._module,
+                className:self._className
             };
 
-            /*for(var prop in pObj){
-             _class.prototype[prop]  = pObj[prop]; //copy vars and methods
-             }*/
-            _class.prototype  = pObj; //copy vars and methods via ref.
+            for(var i=0;i<self._$postProcess.length;i++){
+                self._$postProcess[i].apply(self,[inputs]);
+            }
 
+            this._module[this._className] = inputs.generatedClass;
+            return this._module[this._className];
+        },
+
+        $extends: function(classDefinition){
+            this._extendsTo = classDefinition;
+            return this;
         }
 
-        this._module[this._className] = _class;
-        return this._module[this._className];
-    },
+    };
 
-    $extends: function(classDefinition){
-        this._extendsTo = classDefinition;
-        return this;
-    },
 
-    $provides:function(injectableStrArr){
-        this._provides = injectableStrArr;
-        return this;
-    }
+    module.$Plugin("$Class")// name of plugin.
+        .$provides(["JSModule"]) // injecting JSModule
+        .$create(function(module){
+            module.$Class =function(className){
+                this._$pjs_._$classData[className] = new $Class(className,this);
+                this[className] = function(){};
+                return this._$pjs_._$classData[className];
+            };
 
-};
+            //default meth will be post processed
+            module.$Class.$$process = function(isPreProcess,meth){
+                //add processor method only once.
+                var cProto = $Class.prototype;
+
+                var arr     = cProto._$postProcess,
+                    present = false;
+
+                if(isPreProcess){
+                    arr = cProto._$preProcess;
+                }
+                for(var i=0;i<arr.length;i++){
+                    if(arr[i] == meth){
+                        present = true;
+                        break;
+                    }
+                }
+                if(!present){
+                    arr.push(meth);
+                }
+            };
+
+            return $Class;
+        });
+
+
+})();
+
 

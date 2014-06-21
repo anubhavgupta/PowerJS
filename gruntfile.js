@@ -22,33 +22,33 @@ module.exports = function(grunt){
             },
             dist:{
                 src:[
-                    "<%= dirs.module%>/Class.js",
-                    "<%= dirs.module%>/Injectable.js",
                     "<%= dirs.src%>/JSModule.js",
                     "<%= dirs.src%>/nameSpaceCreator.js",
-                    "<%= dirs.src%>/core.js"
+                    "<%= dirs.src%>/core.js",
+                    "<%= dirs.module%>/Class.js",
+                    "<%= dirs.module%>/Injectable.js"
                 ],
                 dest:"<%= dirs.dest%>/PowerJS.js",
                 nonull:true
             },
             latest:{
                 src:[
-                    "<%= dirs.module%>/Class.js",
-                    "<%= dirs.module%>/Injectable.js",
                     "<%= dirs.src%>/JSModule.js",
                     "<%= dirs.src%>/nameSpaceCreator.js",
-                    "<%= dirs.src%>/core.js"
+                    "<%= dirs.src%>/core.js",
+                    "<%= dirs.module%>/Class.js",
+                    "<%= dirs.module%>/Injectable.js"
                 ],
                 dest:"dist/latest/PowerJS.js",
                 nonull:true
             },
             inBin:{
                 src:[
-                    "<%= dirs.module%>/Class.js",
-                    "<%= dirs.module%>/Injectable.js",
                     "<%= dirs.src%>/JSModule.js",
                     "<%= dirs.src%>/nameSpaceCreator.js",
-                    "<%= dirs.src%>/core.js"
+                    "<%= dirs.src%>/core.js",
+                    "<%= dirs.module%>/Class.js",
+                    "<%= dirs.module%>/Injectable.js"
                 ],
                 dest:"bin/PowerJS.js",
                 nonull:true
