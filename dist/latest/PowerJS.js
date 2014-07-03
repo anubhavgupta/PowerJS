@@ -1,8 +1,9 @@
 //==========================================================
 //  PowerJS                                            
-//  Version: 0.3.3                                
+//  Version: 0.3.4                                
 //  Author:  Anubhav Gupta 
 //  License: MIT  
+//  Link: https://github.com/anubhavgupta/PowerJS.git  
 //==========================================================
 
 
@@ -20,8 +21,6 @@ function JSModule(parentScope, moduleName) {
 }
 
 
-
-
 function createNamespace(scope,index,strArray){
     if(index >= strArray.length){
         return scope;
@@ -36,7 +35,7 @@ function createNamespace(scope,index,strArray){
 
     var
         store ={
-            modules:{},
+            modules:new JSModule(),
             plugins:{}
         },
         undefined = void 0,
@@ -341,7 +340,7 @@ function createNamespace(scope,index,strArray){
                 return this;
             };
 
-
+            var undefinedInjectable = new $Injectable("Undefined",false,void 0);
             //dependency resolvers
             var getInjectableItem = function(itemName,module){
                 var injectableItem = module._$pjs_._$injectables[itemName];
@@ -350,7 +349,7 @@ function createNamespace(scope,index,strArray){
                     injectableItem = module._$pjs_._$injectables[itemName];
                 }
 
-                return injectableItem;
+                return (injectableItem || undefinedInjectable);
             };
 
             var resolveInjectableItems = function(generatorContext,module){

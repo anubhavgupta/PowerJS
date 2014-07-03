@@ -1,5 +1,6 @@
 /**
  * Injectable Class
+ * Provides the facility of making an item injectable and injecting them to class's constructor.
  */
 
 (function () {
@@ -24,7 +25,7 @@
                 return this;
             };
 
-
+            var undefinedInjectable = new $Injectable("Undefined",false,void 0);
             //dependency resolvers
             var getInjectableItem = function(itemName,module){
                 var injectableItem = module._$pjs_._$injectables[itemName];
@@ -33,7 +34,7 @@
                     injectableItem = module._$pjs_._$injectables[itemName];
                 }
 
-                return injectableItem;
+                return (injectableItem || undefinedInjectable);
             };
 
             var resolveInjectableItems = function(generatorContext,module){

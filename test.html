@@ -171,6 +171,22 @@
             .$prototype();
 
     new test.NullInPrototype2();
+
+    var testForUndefinedInjectable = module("InjectionTest").$Class("Test")
+            .$provides(["NoValue"])
+            .$constructor(function(noVal){
+                if(noVal == undefined)
+                {
+                    alert("success on ");
+                }
+                else{
+                    alert("fail");
+                }
+            })
+            .$prototype();
+
+    new testForUndefinedInjectable();
+
     /**
      * ToDo:-
      *  1)resolve issue with conflicting function name in scope and module name in scope

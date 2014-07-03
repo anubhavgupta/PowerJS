@@ -11,5 +11,3 @@ function JSModule(parentScope, moduleName) {
     };
 }
 
-
-

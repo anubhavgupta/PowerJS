@@ -16,6 +16,7 @@ module.exports = function(grunt){
                        "//  Version: <%= pkg.version%>                                \n"+
                        "//  Author:  <%= pkg.author%> \n"+
                        "//  License: <%= pkg.license%>  \n"+
+                       "//  Link: <%= pkg.repository.url%>  \n"+
                         "//==========================================================\n\n\n\n"+
                        ";(function(window){\n'use strict';\n\n",
                 footer:"})(window)\n;"
