@@ -1,6 +1,6 @@
 //==========================================================
 //  PowerJS                                            
-//  Version: 0.3.4                                
+//  Version: 0.4.4                                
 //  Author:  Anubhav Gupta 
 //  License: MIT  
 //  Link: https://github.com/anubhavgupta/PowerJS.git  
@@ -11,6 +11,7 @@
 ;(function(window){
 'use strict';
 
+// add support for private modules too..
 function JSModule(parentScope, moduleName) {
     this._$pjs_ = {
         _moduleName: moduleName,
@@ -19,6 +20,26 @@ function JSModule(parentScope, moduleName) {
         _$parentModule: parentScope
     };
 }
+
+JSModule.prototype = {
+    getCompleteModulePath:function(childModuleName){
+        var completePath = childModuleName;
+
+        if(childModuleName){
+            completePath = this._$pjs_._moduleName+"."+completePath
+        }
+        else{
+            completePath = this._$pjs_._moduleName;
+        }
+
+        if(this._$pjs_._$parentModule)
+        {
+            completePath = this._$pjs_._$parentModule.getCompleteModulePath(completePath);
+        }
+
+        return completePath;
+    }
+};
 
 
 function createNamespace(scope,index,strArray){
@@ -35,7 +56,7 @@ function createNamespace(scope,index,strArray){
 
     var
         store ={
-            modules:new JSModule(),
+            modules:new JSModule(null,"."),//root scope
             plugins:{}
         },
         undefined = void 0,
@@ -394,6 +415,74 @@ function createNamespace(scope,index,strArray){
 
 })();
 
+
+
+(function(){
+
+    function $Serializer(item,toType,module){
+        this.toTypes = {
+            JSON:"JSON"
+        };
+        this.item = item;
+        this.toType = "JSON"; // for now only to JSON.
+        this._module = module;
+    }
+
+    $Serializer.prototype ={
+        $serialize:function(){
+            switch(this.toType){
+                case this.toTypes.JSON:
+                    this.item = JSON.stringify(this.item);
+                    break;
+            }
+            return this.item;
+        },
+        $deserialize:function(){
+            var item = JSON.parse(this.item);
+            var reviver = function(obj){
+                var cls = module()
+            }
+        }
+    };
+
+    module.$Plugin("$Serialize")
+        .$provides(["JSModule","$Class"])
+        .$create(function(module,$Class){
+
+            module.$Serializer = function(item){
+                var serializer = new $Serializer(item,this);
+                return serializer;
+            };
+
+            $Class.$serializable = function(){
+                this.isSerializable = true;
+                return this;
+            };
+
+            module.$Class.$$process(true,function(inputs){
+                if(this.isSerializable){
+                    inputs.context["@pjsCN"]  = inputs.module.getCompleteModulePath()+"."+inputs.className;
+                }
+            });
+
+            return $Serializer;
+        });
+
+
+
+
+})();
+
+
+/*
+* {
+*    value:"anubhav",
+     _$pjs_className: ""
+* }
+*
+* Serializable with date and regex Math
+* Async programming.
+* */
 
 })(window)
 ;

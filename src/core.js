@@ -1,7 +1,7 @@
 
     var
         store ={
-            modules:new JSModule(),
+            modules:new JSModule(null,"."),//root scope
             plugins:{}
         },
         undefined = void 0,

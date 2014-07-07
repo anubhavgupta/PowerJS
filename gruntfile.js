@@ -27,7 +27,8 @@ module.exports = function(grunt){
                     "<%= dirs.src%>/nameSpaceCreator.js",
                     "<%= dirs.src%>/core.js",
                     "<%= dirs.module%>/Class.js",
-                    "<%= dirs.module%>/Injectable.js"
+                    "<%= dirs.module%>/Injectable.js",
+                    "<%= dirs.module%>/Serializable.js"
                 ],
                 dest:"<%= dirs.dest%>/PowerJS.js",
                 nonull:true
@@ -38,7 +39,8 @@ module.exports = function(grunt){
                     "<%= dirs.src%>/nameSpaceCreator.js",
                     "<%= dirs.src%>/core.js",
                     "<%= dirs.module%>/Class.js",
-                    "<%= dirs.module%>/Injectable.js"
+                    "<%= dirs.module%>/Injectable.js",
+                    "<%= dirs.module%>/Serializable.js"
                 ],
                 dest:"dist/latest/PowerJS.js",
                 nonull:true
@@ -49,7 +51,8 @@ module.exports = function(grunt){
                     "<%= dirs.src%>/nameSpaceCreator.js",
                     "<%= dirs.src%>/core.js",
                     "<%= dirs.module%>/Class.js",
-                    "<%= dirs.module%>/Injectable.js"
+                    "<%= dirs.module%>/Injectable.js",
+                    "<%= dirs.module%>/Serializable.js"
                 ],
                 dest:"bin/PowerJS.js",
                 nonull:true

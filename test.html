@@ -2,7 +2,7 @@
 <html>
 <head>
     <title>Test PowerJS</title>
-    <script src="dist/latest/PowerJS.js"></script>
+    <script src="bin/PowerJS.js"></script>
 </head>
 <body>
     <input type="text" class="input"/>
@@ -186,6 +186,16 @@
             .$prototype();
 
     new testForUndefinedInjectable();
+
+    var serializableTest = module("com.google.serializable").$Class("Test")
+            .$constructor(function(){
+                this.someValue = "100";
+                this.anubhav = "gupta";
+            })
+            .$prototype();
+
+    var x = new serializableTest();
+    console.log(module().$Serializer(x).$serialize());
 
     /**
      * ToDo:-
