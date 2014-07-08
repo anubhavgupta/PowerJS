@@ -187,15 +187,35 @@
 
     new testForUndefinedInjectable();
 
+    //------------
+    var ano = module();
     var serializableTest = module("com.google.serializable").$Class("Test")
+            .$serializable()
             .$constructor(function(){
                 this.someValue = "100";
                 this.anubhav = "gupta";
+                this.someObject = new (ano.$Class("Anubhav")
+                        .$serializable()
+                        .$constructor(function(){
+                            this.anonymousValue = "name is anubhav";
+                        })
+                        .$prototype({
+                            showValue:function(){
+                                alert(this.anonymousValue);
+                            }
+                        }))();
             })
-            .$prototype();
+            .$prototype({
+                wooHoo:function(){
+                    alert(this.someValue);
+                }
+            });
 
     var x = new serializableTest();
-    console.log(module().$Serializer(x).$serialize());
+    debugger;
+    x = module().$Serializer(x).$serialize();
+    var y =ano.$Serializer(x).$deserialize();
+    console.log(y);
 
     /**
      * ToDo:-
