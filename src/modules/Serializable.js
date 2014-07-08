@@ -45,6 +45,7 @@
                 }
             });
 
+
             return $Serializer;
         });
 
