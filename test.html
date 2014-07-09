@@ -187,23 +187,24 @@
 
     new testForUndefinedInjectable();
 
-    //------------
-    var ano = module();
+    //------------Serializability Test-------------------------
+    module("SerializabilityTest").$Class("TestSubClass")
+            .$serializable()
+            .$constructor(function(){
+                this.anonymousValue = "All is Well";
+            })
+            .$prototype({
+                showValue:function(){
+                    alert(this.anonymousValue);
+                }
+            });
     var serializableTest = module("com.google.serializable").$Class("Test")
             .$serializable()
             .$constructor(function(){
                 this.someValue = "100";
                 this.anubhav = "gupta";
-                this.someObject = new (ano.$Class("Anubhav")
-                        .$serializable()
-                        .$constructor(function(){
-                            this.anonymousValue = "name is anubhav";
-                        })
-                        .$prototype({
-                            showValue:function(){
-                                alert(this.anonymousValue);
-                            }
-                        }))();
+                var SerializabilityTest = module("SerializabilityTest");
+                this.someObject = new SerializabilityTest.TestSubClass();
             })
             .$prototype({
                 wooHoo:function(){
@@ -212,10 +213,53 @@
             });
 
     var x = new serializableTest();
-    debugger;
     x = module().$Serializer(x).$serialize();
-    var y =ano.$Serializer(x).$deserialize();
-    console.log(y);
+    var y =module().$Serializer(x).$deserialize();
+    y.someObject.showValue();
+    //-- anonymous module.
+
+    var ano = module();
+    ano.$Class("Cl1")
+            .$serializable()
+            .$constructor(function(){
+                this.cl1Value ="100";
+            })
+            .$prototype({
+                cl1Access:function(){
+                    alert(this.cl1Value);
+                }
+            });
+    var innerAno = module("sub",ano);
+    innerAno.$Class("Cl2")
+            .$serializable()
+            .$constructor(function(){
+                this.cl2Value ="200";
+            })
+            .$prototype({
+                cl2Access:function(){
+                    alert(this.cl2Value);
+                }
+            });
+
+    ano.$Class("Cl3")
+            .$serializable()
+            .$constructor(function(){
+                this.cl3Value ="300";
+                this.cl1 = new ano.Cl1();
+                this.cl2 = new innerAno.Cl2();
+            })
+            .$prototype({
+                cl3Access:function(){
+                    alert(this.cl3Value);
+                }
+            });
+    var cl3 = new ano.Cl3();
+    var serializedCl3 = ano.$Serializer(cl3).$serialize();
+    alert(serializedCl3);
+    var Cl3 = ano.$Serializer(serializedCl3).$deserialize();
+    console.log(Cl3);
+
+
 
     /**
      * ToDo:-

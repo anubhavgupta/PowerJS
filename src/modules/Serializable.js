@@ -1,3 +1,8 @@
+/**
+ * TODO:-
+ * Add Support for Date, RegEx,etc...
+ */
+
 (function(){
 
     function $Serializer(item,toType,module){
@@ -75,8 +80,8 @@
         .$provides(["JSModule","$Class"])
         .$create(function(module,$Class){
 
-            module.$Serializer = function(item){
-                return new $Serializer(item,this);
+            module.$Serializer = function(item,type){
+                return new $Serializer(item,type,this);
             };
 
             $Class.$serializable = function(){
@@ -101,19 +106,4 @@
             return $Serializer;
         });
 
-
-
-
 })();
-
-
-/*
-* {
-*    value:"anubhav",
-     _$pjs_className: ""
-* }
-*
-* Serializable with date and regex Math
-* Async programming.
-* */
-

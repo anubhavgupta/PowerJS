@@ -22,7 +22,7 @@ JSModule.prototype = {
             completePath = this._$pjs_._moduleName;
         }
 
-        if(this._$pjs_._$parentModule)
+        if(this._$pjs_._$parentModule &&  this._$pjs_._$parentModule._$pjs_._moduleName)
         {
             completePath = this._$pjs_._$parentModule.getCompleteModulePath(completePath);
         }
@@ -30,4 +30,7 @@ JSModule.prototype = {
         return completePath;
     }
 };
+
+
+
 

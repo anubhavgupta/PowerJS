@@ -32,7 +32,7 @@ JSModule.prototype = {
             completePath = this._$pjs_._moduleName;
         }
 
-        if(this._$pjs_._$parentModule)
+        if(this._$pjs_._$parentModule &&  this._$pjs_._$parentModule._$pjs_._moduleName)
         {
             completePath = this._$pjs_._$parentModule.getCompleteModulePath(completePath);
         }
@@ -40,6 +40,9 @@ JSModule.prototype = {
         return completePath;
     }
 };
+
+
+
 
 
 function createNamespace(scope,index,strArray){
@@ -448,7 +451,7 @@ function createNamespace(scope,index,strArray){
                     //copy all values
                     for(var i in obj){
                         if(obj.hasOwnProperty(i)){
-                              this[i] = obj[i];
+                            this[i] = obj[i];
                         }
                     }
                 };
@@ -494,8 +497,8 @@ function createNamespace(scope,index,strArray){
         .$provides(["JSModule","$Class"])
         .$create(function(module,$Class){
 
-            module.$Serializer = function(item){
-                return new $Serializer(item,this);
+            module.$Serializer = function(item,type){
+                return new $Serializer(item,type,this);
             };
 
             $Class.$serializable = function(){
@@ -520,21 +523,5 @@ function createNamespace(scope,index,strArray){
             return $Serializer;
         });
 
-
-
-
-})();
-
-
-/*
-* {
-*    value:"anubhav",
-     _$pjs_className: ""
-* }
-*
-* Serializable with date and regex Math
-* Async programming.
-* */
-
-})(window)
+})();})(window)
 ;
