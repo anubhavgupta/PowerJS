@@ -339,10 +339,9 @@ License
 **MIT**
 
 Contact me:
-[Anubhav]
+Anubhav
+Email:- anubhav200@gmail.com
 
-
-[Anubhav]:anubhav200@gmail.com
 **Free Software, Hell Yeah!**
     
 
