@@ -82,15 +82,15 @@
                     if(pObj.hasOwnProperty(meth)){
                         if(typeof  pObj[meth] === "function" )
                         {
-                            _class.prototype[meth] = function(){
-                                var methd = meth;
+                            _class.prototype[meth] = function(methd){
                                 return function(){
+                                    var tempSuper = this.$super;
                                     this.$super = self._extendsTo.prototype[methd] || function(){};
                                     var returnVal = pObj[methd].apply(this,arguments);
-                                    this.$super = function(){};
+                                    this.$super = tempSuper;
                                     return returnVal;
                                 }
-                            }(); //auto execute to give it a new scope
+                            }(meth); //auto execute to give it a new scope
 
                         }
                         else{  /// variable or object
